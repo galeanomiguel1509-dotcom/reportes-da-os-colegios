@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reporte de Daños · Colegio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B1E23;
+    --ink-soft:#5B6270;
+    --bg:#F5F4F0;
+    --card:#FFFFFF;
+    --line:#E4E2DB;
+    --navy:#22304A;
+    --navy-dark:#161F31;
+    --amber:#E8A33D;
+    --amber-dark:#C9821F;
+    --danger:#C1442E;
+    --danger-bg:#FBE7E2;
+    --warn:#B98418;
+    --warn-bg:#FBF0DA;
+    --ok:#3F8F5F;
+    --ok-bg:#E4F3EA;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    min-height:100vh;
+    padding-bottom:40px;
+  }
+  h1,h2,h3,.brand,.step-title{font-family:'Archivo',system-ui,sans-serif;}
+
+  /* Header */
+  header{
+    background:var(--navy);
+    background-image:linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+    color:#fff;
+    padding:22px 20px 60px;
+    position:relative;
+  }
+  .brand-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    max-width:760px;
+    margin:0 auto;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:700;
+    font-size:17px;
+    letter-spacing:.2px;
+  }
+  .brand .mark{
+    width:34px;height:34px;border-radius:9px;
+    background:var(--amber);
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;
+    flex-shrink:0;
+  }
+  nav.tabs{
+    display:flex;
+    gap:4px;
+    background:rgba(255,255,255,.08);
+    padding:4px;
+    border-radius:10px;
+  }
+  nav.tabs button{
+    border:none;
+    background:transparent;
+    color:rgba(255,255,255,.75);
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    padding:7px 13px;
+    border-radius:7px;
+    cursor:pointer;
+  }
+  nav.tabs button.active{
+    background:#fff;
+    color:var(--navy);
+  }
+  header .lead{
+    max-width:760px;
+    margin:26px auto 0;
+  }
+  header .lead h1{
+    font-size:26px;
+    margin:0 0 6px;
+    font-weight:700;
+  }
+  header .lead p{
+    margin:0;
+    color:rgba(255,255,255,.72);
+    font-size:14.5px;
+    max-width:44ch;
+  }
+
+  main{
+    max-width:760px;
+    margin:-38px auto 0;
+    padding:0 20px;
+  }
+
+  /* Card */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:0 12px 30px -18px rgba(22,31,49,.35);
+  }
+
+  /* ---- Student form ---- */
+  #view-report .card{ padding:26px 22px 24px; }
+  .field{ margin-bottom:18px; }
+  .field label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:var(--navy);
+    margin-bottom:7px;
+  }
+  .field .hint{
+    font-weight:400;
+    color:var(--ink-soft);
+    font-size:12px;
+  }
+  select, textarea, input[type="text"]{
+    width:100%;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    padding:12px 13px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    background:#FBFAF8;
+    color:var(--ink);
+    outline:none;
+  }
+  select:focus, textarea:focus, input[type="text"]:focus{
+    border-color:var(--navy);
+    background:#fff;
+  }
+  textarea{ resize:vertical; min-height:90px; line-height:1.45; }
+
+  .photo-box{
+    border:1.5px dashed var(--line);
+    border-radius:10px;
+    padding:16px;
+    text-align:center;
+    background:#FBFAF8;
+    cursor:pointer;
+    transition:border-color .15s;
+  }
+  .photo-box:hover{ border-color:var(--amber-dark); }
+  .photo-box input{ display:none; }
+  .photo-box .icon{ font-size:22px; margin-bottom:4px; }
+  .photo-box .txt{ font-size:13.5px; font-weight:600; color:var(--navy); }
+  .photo-box .sub{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
+  #photo-preview{
+    margin-top:10px;
+    max-height:150px;
+    max-width:100%;
+    border-radius:8px;
+    display:none;
+  }
+
+  .submit-btn{
+    width:100%;
+    background:var(--amber);
+    color:var(--navy-dark);
+    border:none;
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:15.5px;
+    padding:15px;
+    border-radius:11px;
+    cursor:pointer;
+    margin-top:6px;
+    transition:transform .08s, background .15s;
+  }
+  .submit-btn:hover{ background:var(--amber-dark); }
+  .submit-btn:active{ transform:scale(.98); }
+  .submit-btn:disabled{ opacity:.6; cursor:default; }
+
+  .confirm{
+    display:none;
+    text-align:center;
+    padding:34px 20px;
+  }
+  .confirm .check{
+    width:56px;height:56px;border-radius:50%;
+    background:var(--ok-bg);
+    color:var(--ok);
+    display:flex;align-items:center;justify-content:center;
+    font-size:28px;
+    margin:0 auto 14px;
+  }
+  .confirm h2{ font-size:19px; margin:0 0 6px; color:var(--navy); }
+  .confirm p{ color:var(--ink-soft); font-size:14px; margin:0 0 18px; }
+  .confirm button{
+    background:transparent;
+    border:1.5px solid var(--navy);
+    color:var(--navy);
+    font-weight:600;
+    font-size:13.5px;
+    padding:10px 18px;
+    border-radius:9px;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+  }
+
+  /* ---- Admin panel ---- */
+  #view-admin{ display:none; }
+  .admin-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin:0 0 14px;
+    flex-wrap:wrap;
+  }
+  .admin-head h2{ font-size:18px; margin:0; color:var(--navy); }
+  .counts{ display:flex; gap:8px; }
+  .pill{
+    font-size:12px;
+    font-weight:600;
+    padding:5px 10px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+  .pill.pendiente{ background:var(--danger-bg); color:var(--danger); }
+  .pill.revision{ background:var(--warn-bg); color:var(--warn); }
+  .pill.reparado{ background:var(--ok-bg); color:var(--ok); }
+
+  .table-wrap{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .report-row{
+    display:grid;
+    grid-template-columns:4px 1fr;
+    border-bottom:1px solid var(--line);
+  }
+  .report-row:last-child{ border-bottom:none; }
+  .report-row .bar{ background:var(--line); }
+  .report-row.pendiente .bar{ background:var(--danger); }
+  .report-row.revision .bar{ background:var(--warn); }
+  .report-row.reparado .bar{ background:var(--ok); }
+  .report-body{ padding:15px 16px; }
+  .report-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+    margin-bottom:6px;
+  }
+  .report-top .salon{ font-weight:700; font-size:14.5px; color:var(--navy); }
+  .report-top .tipo{ font-size:12.5px; color:var(--ink-soft); }
+  .report-desc{ font-size:13.5px; color:var(--ink); line-height:1.5; margin-bottom:10px; }
+  .report-meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .report-date{ font-size:11.5px; color:var(--ink-soft); }
+  .report-thumb{
+    width:44px;height:44px;object-fit:cover;border-radius:7px;border:1px solid var(--line);
+  }
+  select.status-select{
+    font-size:12.5px;
+    font-weight:600;
+    padding:6px 9px;
+    border-radius:8px;
+    border:1.5px solid var(--line);
+    background:#FBFAF8;
+    color:var(--navy);
+  }
+  .empty-state{
+    text-align:center;
+    padding:46px 20px;
+    color:var(--ink-soft);
+  }
+  .empty-state .icon{ font-size:26px; margin-bottom:8px; }
+  .empty-state p{ font-size:13.5px; margin:0; }
+
+  @media (max-width:480px){
+    header{ padding:18px 16px 54px; }
+    header .lead h1{ font-size:22px; }
+    main{ padding:0 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-row">
+    <div class="brand"><span class="mark">🛠️</span> Reporte de Daños</div>
+    <nav class="tabs">
+      <button id="tab-report" class="active" onclick="switchView('report')">Reportar</button>
+      <button id="tab-admin" onclick="switchView('admin')">Panel</button>
+    </nav>
+  </div>
+  <div class="lead">
+    <h1>Cuéntanos qué se dañó</h1>
+    <p>Llena el formulario en segundos. No necesitas instalar nada ni crear una cuenta.</p>
+  </div>
+</header>
+
+<main>
+
+  <!-- VISTA ESTUDIANTE -->
+  <section id="view-report">
+    <div class="card">
+      <form id="report-form">
+
+        <div class="field">
+          <label for="salon">Salón</label>
+          <select id="salon" required>
+            <option value="" disabled selected>Selecciona el salón</option>
+            <option>101</option><option>102</option><option>103</option>
+            <option>201</option><option>202</option><option>203</option>
+            <option>301</option><option>302</option><option>303</option>
+            <option>Laboratorio de ciencias</option>
+            <option>Sala de sistemas</option>
+            <option>Biblioteca</option>
+            <option>Cafetería</option>
+            <option>Baños</option>
+            <option>Patio / zonas comunes</option>
+            <option>Coliseo / zona deportiva</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="tipo">Tipo de daño</label>
+          <select id="tipo" required>
+            <option value="" disabled selected>Selecciona el tipo de daño</option>
+            <option>Mobiliario (silla, mesa, pupitre)</option>
+            <option>Vidrios o ventanas</option>
+            <option>Eléctrico (luces, enchufes)</option>
+            <option>Pintura o paredes</option>
+            <option>Puertas o cerraduras</option>
+            <option>Equipo tecnológico</option>
+            <option>Baños / grifería</option>
+            <option>Otro</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="descripcion">Descripción <span class="hint">— qué pasó y dónde exactamente</span></label>
+          <textarea id="descripcion" placeholder="Ej: La silla de la tercera fila tiene una pata rota." required></textarea>
+        </div>
+
+        <div class="field">
+          <label>Foto como evidencia <span class="hint">(opcional)</span></label>
+          <label class="photo-box" id="photo-box">
+            <input type="file" id="photo-input" accept="image/*" capture="environment">
+            <div class="icon">📷</div>
+            <div class="txt">Subir foto</div>
+            <div class="sub">Toca para tomar o elegir una imagen</div>
+            <img id="photo-preview" alt="Vista previa">
+          </label>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submit-btn">Enviar reporte en 10 segundos</button>
+      </form>
+
+      <div class="confirm" id="confirm-box">
+        <div class="check">✓</div>
+        <h2>¡Reporte enviado!</h2>
+        <p>Gracias, el equipo de mantenimiento fue notificado.</p>
+        <button onclick="resetForm()">Reportar otro daño</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISTA ADMIN -->
+  <section id="view-admin">
+    <div class="admin-head">
+      <h2>Reportes recibidos</h2>
+      <div class="counts" id="counts"></div>
+    </div>
+    <div class="table-wrap" id="table-wrap"></div>
+  </section>
+
+</main>
+
+<script>
+  const STORAGE_KEY = 'colegio_reportes_danos';
+  let photoDataUrl = null;
+
+  // ---------- Navegación ----------
+  function switchView(view){
+    document.getElementById('view-report').style.display = view === 'report' ? 'block' : 'none';
+    document.getElementById('view-admin').style.display = view === 'admin' ? 'block' : 'none';
+    document.getElementById('tab-report').classList.toggle('active', view === 'report');
+    document.getElementById('tab-admin').classList.toggle('active', view === 'admin');
+    if(view === 'admin') renderAdmin();
+  }
+
+  // ---------- Foto ----------
+  document.getElementById('photo-input').addEventListener('change', function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev){
+      photoDataUrl = ev.target.result;
+      const preview = document.getElementById('photo-preview');
+      preview.src = photoDataUrl;
+      preview.style.display = 'block';
+      document.querySelector('#photo-box .txt').textContent = 'Foto cargada';
+      document.querySelector('#photo-box .sub').textContent = 'Toca para cambiarla';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // ---------- Guardar reportes ----------
+  function getReportes(){
+    try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch(e){ return []; }
+  }
+  function saveReportes(list){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  }
+
+  document.getElementById('report-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    const reporte = {
+      id: Date.now(),
+      salon: document.getElementById('salon').value,
+      tipo: document.getElementById('tipo').value,
+      descripcion: document.getElementById('descripcion').value,
+      foto: photoDataUrl,
+      estado: 'pendiente',
+      fecha: new Date().toLocaleString('es-CO', { dateStyle:'medium', timeStyle:'short' })
+    };
+
+    setTimeout(function(){
+      const list = getReportes();
+      list.unshift(reporte);
+      saveReportes(list);
+
+      document.getElementById('report-form').style.display = 'none';
+      document.getElementById('confirm-box').style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Enviar reporte en 10 segundos';
+    }, 400);
+  });
+
+  function resetForm(){
+    document.getElementById('report-form').reset();
+    document.getElementById('report-form').style.display = 'block';
+    document.getElementById('confirm-box').style.display = 'none';
+    photoDataUrl = null;
+    document.getElementById('photo-preview').style.display = 'none';
+    document.querySelector('#photo-box .txt').textContent = 'Subir foto';
+    document.querySelector('#photo-box .sub').textContent = 'Toca para tomar o elegir una imagen';
+  }
+
+  // ---------- Panel admin ----------
+  const ESTADOS = {
+    pendiente: { label:'Pendiente', class:'pendiente' },
+    revision:  { label:'En revisión', class:'revision' },
+    reparado:  { label:'Reparado', class:'reparado' }
+  };
+
+  function renderAdmin(){
+    const list = getReportes();
+    const wrap = document.getElementById('table-wrap');
+    const counts = document.getElementById('counts');
+
+    const totals = { pendiente:0, revision:0, reparado:0 };
+    list.forEach(r => totals[r.estado] = (totals[r.estado]||0) + 1);
+    counts.innerHTML = Object.keys(ESTADOS).map(key =>
+      `<span class="pill ${ESTADOS[key].class}">${ESTADOS[key].label}: ${totals[key]||0}</span>`
+    ).join('');
+
+    if(list.length === 0){
+      wrap.innerHTML = `<div class="empty-state"><div class="icon">📋</div><p>Todavía no hay reportes registrados.</p></div>`;
+      return;
+    }
+
+    wrap.innerHTML = list.map(r => `
+      <div class="report-row ${ESTADOS[r.estado].class}">
+        <div class="bar"></div>
+        <div class="report-body">
+          <div class="report-top">
+            <div>
+              <div class="salon">Salón ${r.salon}</div>
+              <div class="tipo">${r.tipo}</div>
+            </div>
+            ${r.foto ? `<img class="report-thumb" src="${r.foto}" alt="Evidencia">` : ''}
+          </div>
+          <div class="report-desc">${r.descripcion}</div>
+          <div class="report-meta">
+            <span class="report-date">${r.fecha}</span>
+            <select class="status-select" onchange="cambiarEstado(${r.id}, this.value)">
+              <option value="pendiente" ${r.estado==='pendiente'?'selected':''}>Pendiente</option>
+              <option value="revision" ${r.estado==='revision'?'selected':''}>En revisión</option>
+              <option value="reparado" ${r.estado==='reparado'?'selected':''}>Reparado</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function cambiarEstado(id, nuevoEstado){
+    const list = getReportes();
+    const idx = list.findIndex(r => r.id === id);
+    if(idx > -1){
+      list[idx].estado = nuevoEstado;
+      saveReportes(list);
+      renderAdmin();
+    }
+  }
+</script>
+
+</body>
+</html>
